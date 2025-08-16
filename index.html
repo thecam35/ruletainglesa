@@ -8,14 +8,14 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-<!-- Fuente futurista -->
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Fuentes más convencionales -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
     body {
-        font-family: 'Orbitron', 'Arial', sans-serif;
+        font-family: 'Roboto', 'Arial', sans-serif;
         text-align: center;
-        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        color: #e0e0e0;
+        background: #f5f5f5;
+        color: #333;
         margin: 0;
         padding: 0;
         display: flex;
@@ -23,51 +23,50 @@
     }
     h1 {
         margin-top: 20px;
-        color: #00f7ff;
+        color: #2c3e50;
         font-weight: 700;
     }
     canvas {
-        background: rgba(0, 0, 0, 0.3);
+        background: #fff;
         border-radius: 50%;
         margin-top: 20px;
-        box-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
-        border: 2px solid #00f7ff;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border: 2px solid #3498db;
     }
     button {
-        background: linear-gradient(45deg, #00f7ff, #0084ff);
+        background: #3498db;
         border: none;
         padding: 12px 25px;
-        font-size: 18px;
+        font-size: 16px;
         cursor: pointer;
-        border-radius: 30px;
+        border-radius: 4px;
         margin: 10px;
-        color: #000;
-        font-weight: bold;
+        color: white;
+        font-weight: 500;
         transition: all 0.3s ease;
     }
     button:hover {
-        background: linear-gradient(45deg, #00ffea, #00b4ff);
+        background: #2980b9;
         transform: translateY(-2px);
     }
     #resultado {
-        font-size: 24px;
+        font-size: 20px;
         margin-top: 20px;
         font-weight: bold;
-        color: #00f7ff;
+        color: #2c3e50;
     }
     #total {
-        font-size: 22px;
+        font-size: 18px;
         margin-top: 10px;
-        color: #00ff9d;
+        color: #27ae60;
     }
     .auth-container {
         max-width: 400px;
         margin: 20px auto;
         padding: 30px;
-        background: rgba(15, 12, 41, 0.8);
-        border-radius: 15px;
-        box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
-        border: 1px solid #00f7ff;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .auth-form {
         display: flex;
@@ -76,10 +75,10 @@
     }
     .auth-form input {
         padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #00f7ff;
-        background: rgba(0, 0, 0, 0.3);
-        color: #fff;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        background: #fff;
+        color: #333;
         font-size: 16px;
     }
     .auth-form button {
@@ -92,33 +91,32 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        background: rgba(15, 12, 41, 0.8);
+        background: white;
         padding: 10px 15px;
-        border-radius: 30px;
-        border: 1px solid #00f7ff;
-        box-shadow: 0 0 15px rgba(0, 247, 255, 0.2);
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     #logoutBtn {
-        background: linear-gradient(45deg, #ff0000, #ff6b6b);
+        background: #e74c3c;
         padding: 5px 15px;
         font-size: 14px;
         margin-left: 10px;
     }
     #logoutBtn:hover {
-        background: linear-gradient(45deg, #ff3d3d, #ff8a8a);
+        background: #c0392b;
     }
     /* Estilos para el modal de reglas */
     .rules-btn {
         position: fixed;
         bottom: 20px;
         right: 20px;
-        background: linear-gradient(45deg, #00f7ff, #0084ff);
-        color: #000;
+        background: #3498db;
+        color: white;
         border: none;
         border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        font-size: 24px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
         cursor: pointer;
         z-index: 1000;
         transition: all 0.3s ease;
@@ -134,33 +132,32 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,0.9);
+        background-color: rgba(0,0,0,0.5);
     }
     .modal-content {
-        background: linear-gradient(135deg, #0f0c29, #302b63);
+        background: white;
         margin: 5% auto;
         padding: 25px;
-        border: 1px solid #00f7ff;
+        border-radius: 8px;
         width: 80%;
         max-width: 600px;
-        border-radius: 15px;
         text-align: left;
     }
     .close {
-        color: #00f7ff;
+        color: #7f8c8d;
         float: right;
         font-size: 28px;
         font-weight: bold;
         cursor: pointer;
     }
     .close:hover {
-        color: #fff;
+        color: #333;
     }
     .rules-title {
-        color: #00f7ff;
+        color: #2c3e50;
         text-align: center;
         margin-bottom: 20px;
-        font-size: 24px;
+        font-size: 22px;
     }
     .rules-list {
         padding-left: 20px;
@@ -170,56 +167,56 @@
         line-height: 1.6;
     }
     .highlight {
-        color: #00ff9d;
+        color: #e74c3c;
         font-weight: bold;
     }
     /* Panel lateral de retiros y recargas */
     .side-panel {
-        width: 320px;
-        background: rgba(15, 12, 41, 0.8);
+        width: 300px;
+        background: white;
         padding: 20px;
         overflow-y: auto;
-        border-right: 1px solid #00f7ff;
+        border-right: 1px solid #ddd;
         display: flex;
         flex-direction: column;
     }
     .panel-tabs {
         display: flex;
         margin-bottom: 20px;
-        border-bottom: 1px solid #00f7ff;
+        border-bottom: 1px solid #ddd;
     }
     .panel-tab {
-        padding: 10px 20px;
+        padding: 10px 15px;
         cursor: pointer;
         border-bottom: 3px solid transparent;
-        color: #e0e0e0;
+        color: #7f8c8d;
         transition: all 0.3s ease;
     }
     .panel-tab.active {
-        border-bottom: 3px solid #00f7ff;
-        color: #00f7ff;
+        border-bottom: 3px solid #3498db;
+        color: #3498db;
         font-weight: bold;
     }
     .panel-tab:hover {
-        color: #00f7ff;
+        color: #3498db;
     }
     .panel-content {
         flex: 1;
         overflow-y: auto;
     }
     .panel-title {
-        color: #00f7ff;
-        font-size: 20px;
+        color: #2c3e50;
+        font-size: 18px;
         margin-bottom: 20px;
         text-align: center;
     }
     .item {
-        background: rgba(0, 247, 255, 0.1);
+        background: #f9f9f9;
         padding: 15px;
         margin-bottom: 15px;
-        border-radius: 10px;
+        border-radius: 8px;
         position: relative;
-        border: 1px solid rgba(0, 247, 255, 0.2);
+        border: 1px solid #eee;
         transition: all 0.3s ease;
     }
     .item:hover {
@@ -227,10 +224,10 @@
     }
     .item-name {
         font-weight: bold;
-        color: #00f7ff;
+        color: #2c3e50;
     }
     .item-amount {
-        color: #00ff9d;
+        color: #27ae60;
     }
     .item-status {
         position: absolute;
@@ -242,20 +239,20 @@
         font-weight: bold;
     }
     .status-pending {
-        background: linear-gradient(45deg, #ffcc00, #ffaa00);
-        color: #000;
+        background: #f39c12;
+        color: white;
     }
     .status-approved {
-        background: linear-gradient(45deg, #4CAF50, #2E7D32);
+        background: #27ae60;
         color: white;
     }
     .status-rejected {
-        background: linear-gradient(45deg, #f44336, #c62828);
+        background: #e74c3c;
         color: white;
     }
     .item-date {
         font-size: 12px;
-        color: #aaa;
+        color: #95a5a6;
         margin-top: 8px;
     }
     /* Contenedor principal del juego */
@@ -267,15 +264,15 @@
     /* Panel de administración */
     .admin-btn {
         position: fixed;
-        bottom: 90px;
+        bottom: 80px;
         right: 20px;
-        background: linear-gradient(45deg, #ff00ff, #8a2be2);
+        background: #9b59b6;
         color: white;
         border: none;
         border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        font-size: 24px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
         cursor: pointer;
         z-index: 1000;
         transition: all 0.3s ease;
@@ -290,15 +287,15 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.95);
+        background: rgba(0,0,0,0.9);
         z-index: 1002;
         overflow-y: auto;
         padding: 30px;
     }
     .admin-panel h2 {
-        color: #ff00ff;
+        color: #9b59b6;
         text-align: center;
-        font-size: 28px;
+        font-size: 24px;
         margin-bottom: 30px;
     }
     .admin-tabs {
@@ -307,91 +304,89 @@
         margin-bottom: 30px;
     }
     .admin-tab {
-        padding: 12px 25px;
-        background: rgba(15, 12, 41, 0.8);
+        padding: 10px 20px;
+        background: #2c3e50;
         margin: 0 10px;
         cursor: pointer;
-        border-radius: 30px;
-        border: 1px solid #ff00ff;
-        color: #e0e0e0;
+        border-radius: 4px;
+        color: white;
         transition: all 0.3s ease;
     }
     .admin-tab.active {
-        background: linear-gradient(45deg, #ff00ff, #8a2be2);
+        background: #9b59b6;
         color: white;
         font-weight: bold;
     }
     .admin-tab:hover {
-        background: rgba(255, 0, 255, 0.3);
+        background: #8e44ad;
     }
     .admin-table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
-        background: rgba(15, 12, 41, 0.8);
-        border: 1px solid #00f7ff;
+        background: white;
     }
     .admin-table th, .admin-table td {
         padding: 12px;
-        border: 1px solid rgba(0, 247, 255, 0.3);
+        border: 1px solid #ddd;
         text-align: left;
     }
     .admin-table th {
-        background: rgba(0, 247, 255, 0.1);
-        color: #00f7ff;
+        background: #f2f2f2;
+        color: #2c3e50;
     }
     .admin-table tr:nth-child(even) {
-        background: rgba(0, 247, 255, 0.05);
+        background: #f9f9f9;
     }
     .admin-table tr:hover {
-        background: rgba(0, 247, 255, 0.1);
+        background: #f1f1f1;
     }
     .admin-action-btn {
-        padding: 8px 15px;
+        padding: 6px 12px;
         margin: 0 5px;
         border: none;
-        border-radius: 30px;
+        border-radius: 4px;
         cursor: pointer;
         font-weight: bold;
         transition: all 0.3s ease;
     }
     .approve-btn {
-        background: linear-gradient(45deg, #4CAF50, #2E7D32);
+        background: #27ae60;
         color: white;
     }
     .approve-btn:hover {
-        background: linear-gradient(45deg, #66BB6A, #388E3C);
+        background: #2ecc71;
     }
     .reject-btn {
-        background: linear-gradient(45deg, #f44336, #c62828);
+        background: #e74c3c;
         color: white;
     }
     .reject-btn:hover {
-        background: linear-gradient(45deg, #ef5350, #d32f2f);
+        background: #c0392b;
     }
     /* Formulario de retiro */
     .withdraw-form {
         max-width: 450px;
         margin: 30px auto;
         padding: 30px;
-        background: rgba(15, 12, 41, 0.9);
-        border-radius: 15px;
+        background: white;
+        border-radius: 8px;
         text-align: left;
-        border: 1px solid #00f7ff;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .withdraw-form input {
         width: 100%;
         padding: 12px;
         margin: 15px 0;
-        border-radius: 8px;
-        border: 1px solid #00f7ff;
-        background: rgba(0, 0, 0, 0.3);
-        color: #fff;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        background: #fff;
+        color: #333;
         font-size: 16px;
     }
     .empty-message {
         text-align: center;
-        color: #aaa;
+        color: #95a5a6;
         font-style: italic;
         margin-top: 30px;
         font-size: 16px;
@@ -405,27 +400,26 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,0.9);
+        background-color: rgba(0,0,0,0.5);
     }
     .recharge-content {
-        background: linear-gradient(135deg, #0f0c29, #302b63);
+        background: white;
         margin: 10% auto;
         padding: 30px;
-        border: 1px solid #00f7ff;
+        border-radius: 8px;
         width: 80%;
         max-width: 500px;
-        border-radius: 15px;
         text-align: center;
     }
     .recharge-title {
-        color: #00f7ff;
-        font-size: 24px;
+        color: #2c3e50;
+        font-size: 22px;
         margin-bottom: 20px;
     }
     .recharge-info {
-        background: rgba(0, 247, 255, 0.1);
+        background: #f9f9f9;
         padding: 20px;
-        border-radius: 10px;
+        border-radius: 8px;
         margin-bottom: 20px;
     }
     .recharge-info p {
@@ -434,16 +428,16 @@
     .recharge-amount {
         font-size: 18px;
         font-weight: bold;
-        color: #00ff9d;
+        color: #27ae60;
     }
     .recharge-id {
         font-size: 20px;
         font-weight: bold;
-        color: #00f7ff;
+        color: #2c3e50;
         margin: 15px 0;
         padding: 10px;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 8px;
+        background: #f2f2f2;
+        border-radius: 4px;
     }
     .recharge-steps {
         text-align: left;
@@ -451,6 +445,108 @@
     }
     .recharge-steps li {
         margin-bottom: 10px;
+    }
+    /* Estilos para el panel de referidos */
+    .referral-panel {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: left;
+    }
+    .referral-title {
+        color: #2c3e50;
+        font-size: 18px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .referral-code {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 18px;
+        text-align: center;
+        margin: 10px 0;
+        border: 1px dashed #3498db;
+    }
+    .referral-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+    .stat-box {
+        background: #f1f8fe;
+        padding: 10px;
+        border-radius: 4px;
+        text-align: center;
+        flex: 1;
+        margin: 0 5px;
+        border: 1px solid #e1f0fa;
+    }
+    .stat-value {
+        font-size: 20px;
+        font-weight: bold;
+        color: #3498db;
+    }
+    .stat-label {
+        font-size: 12px;
+        color: #7f8c8d;
+    }
+    .referral-list {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 15px;
+    }
+    .referral-item {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+    }
+    .referral-item:last-child {
+        border-bottom: none;
+    }
+    .copy-btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        margin-left: 10px;
+    }
+    .copy-btn:hover {
+        background: #2980b9;
+    }
+    .share-buttons {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+        gap: 10px;
+    }
+    .share-btn {
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .whatsapp-btn {
+        background: #25D366;
+        color: white;
+    }
+    .telegram-btn {
+        background: #0088cc;
+        color: white;
+    }
+    .facebook-btn {
+        background: #3b5998;
+        color: white;
     }
 </style>
 </head>
@@ -462,6 +558,7 @@
         <div class="panel-tab active" onclick="showPanelTab('withdrawals')">Retiros</div>
         <div class="panel-tab" onclick="showPanelTab('recharges')">Recargas</div>
         <div class="panel-tab" onclick="showPanelTab('myWithdrawals')">Mis Retiros</div>
+        <div class="panel-tab" onclick="showPanelTab('referrals')">Referidos</div>
     </div>
     
     <div class="panel-content">
@@ -478,6 +575,49 @@
         <div id="myWithdrawalsPanel" style="display: none;">
             <div class="panel-title">📋 Mis Retiros</div>
             <div id="myWithdrawalsList"></div>
+        </div>
+        
+        <div id="referralsPanel" style="display: none;">
+            <div class="panel-title">👥 Programa de Referidos</div>
+            <div class="referral-panel">
+                <div class="referral-title">Invita amigos y gana $1 USD por cada uno</div>
+                
+                <div>Tu enlace de referido:</div>
+                <div class="referral-code" id="referralLink">Cargando...</div>
+                <button class="copy-btn" onclick="copyReferralLink()">Copiar</button>
+                
+                <div class="share-buttons">
+                    <button class="share-btn whatsapp-btn" onclick="shareViaWhatsApp()">
+                        <i>📱</i> WhatsApp
+                    </button>
+                    <button class="share-btn telegram-btn" onclick="shareViaTelegram()">
+                        <i>✈️</i> Telegram
+                    </button>
+                    <button class="share-btn facebook-btn" onclick="shareViaFacebook()">
+                        <i>👍</i> Facebook
+                    </button>
+                </div>
+                
+                <div class="referral-stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalReferrals">0</div>
+                        <div class="stat-label">Referidos</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="activeReferrals">0</div>
+                        <div class="stat-label">Activos</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="referralEarnings">$0.00</div>
+                        <div class="stat-label">Ganancias</div>
+                    </div>
+                </div>
+                
+                <div class="referral-title">Tus referidos</div>
+                <div class="referral-list" id="referralList">
+                    <div class="empty-message">No tienes referidos aún</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -506,6 +646,7 @@
                 <li>🔄 Puedes girar tantas veces como tu saldo lo permita.</li>
                 <li>🎁 Los premios van desde $0.50 USD hasta $10.00 USD, pero también hay espacios vacíos.</li>
                 <li>📌 Para recargar, envía el pago al ID de Binance: <span class="highlight">1050484055</span>.</li>
+                <li>👥 <span class="highlight">NUEVO:</span> Invita amigos con tu código de referido y gana $1 USD por cada uno que se registre.</li>
             </ul>
         </div>
     </div>
@@ -535,7 +676,7 @@
             
             <input type="number" id="rechargeAmount" placeholder="Monto a recargar (USD)" min="1" step="0.01">
             <button onclick="submitRechargeRequest()">Enviar Solicitud</button>
-            <button onclick="closeRechargeModal()" style="background: #ff4444;">Cancelar</button>
+            <button onclick="closeRechargeModal()" style="background: #e74c3c;">Cancelar</button>
         </div>
     </div>
 
@@ -596,6 +737,7 @@
                         <th>Saldo</th>
                         <th>Recargas</th>
                         <th>Retiros</th>
+                        <th>Referidos</th>
                         <th>Registro</th>
                         <th>ID Binance</th>
                     </tr>
@@ -606,7 +748,7 @@
             </table>
         </div>
         
-        <button onclick="closeAdminPanel()" style="margin-top: 20px;">Cerrar Panel</button>
+        <button onclick="closeAdminPanel()" style="margin-top: 20px; background: #e74c3c;">Cerrar Panel</button>
     </div>
 
     <!-- Contenedor de autenticación -->
@@ -616,6 +758,7 @@
             <input type="email" id="email" placeholder="Correo electrónico">
             <input type="password" id="password" placeholder="Contraseña">
             <input type="text" id="binanceIdRegister" placeholder="ID de Binance (requerido)" class="hidden">
+            <input type="text" id="referralCode" placeholder="Código de referido (opcional)" class="hidden">
             <button onclick="login()">Iniciar Sesión</button>
             <button onclick="toggleRegister()">Registrarse</button>
         </div>
@@ -646,7 +789,7 @@
         <p id="withdrawMessage"></p>
         <input type="number" id="withdrawAmount" placeholder="Monto a retirar" min="30" step="0.01" required>
         <button onclick="requestWithdrawal()">Enviar Solicitud</button>
-        <button onclick="closeWithdrawForm()">Cancelar</button>
+        <button onclick="closeWithdrawForm()" style="background: #e74c3c;">Cancelar</button>
     </div>
 </div>
 
@@ -707,10 +850,10 @@ const premios = [
 ];
 
 const colores = [
-    "#ff0000", "#111", "#00ff00", "#111", "#0000ff", "#111",
-    "#ff00ff", "#111", "#00ffff", "#111", "#44ff44", "#111",
-    "#4444ff", "#111", "#ffff44", "#111", "#ff8800", "#111",
-    "#ff0000", "#111"
+    "#e74c3c", "#95a5a6", "#2ecc71", "#95a5a6", "#3498db", "#95a5a6",
+    "#9b59b6", "#95a5a6", "#1abc9c", "#95a5a6", "#27ae60", "#95a5a6",
+    "#2980b9", "#95a5a6", "#f1c40f", "#95a5a6", "#e67e22", "#95a5a6",
+    "#e74c3c", "#95a5a6"
 ];
 
 let anguloInicio = 0;
@@ -722,6 +865,8 @@ let totalGanado = 0;
 let userId = null;
 let isAdmin = false;
 let registering = false;
+let referralCode = '';
+let referralLink = '';
 
 // Lista de nombres para el panel lateral
 const nombres = ["Juan", "Luis", "Carlos", "María", "Ana", "Pedro", "José", "Miguel", "Sofía", "Laura"];
@@ -739,12 +884,18 @@ function showPanelTab(tabName) {
     document.getElementById('withdrawalsPanel').style.display = 'none';
     document.getElementById('rechargesPanel').style.display = 'none';
     document.getElementById('myWithdrawalsPanel').style.display = 'none';
+    document.getElementById('referralsPanel').style.display = 'none';
     
     document.getElementById(`${tabName}Panel`).style.display = 'block';
     
     // Si es la pestaña de mis retiros, cargarlos
     if (tabName === 'myWithdrawals' && userId) {
         loadMyWithdrawals();
+    }
+    
+    // Si es la pestaña de referidos, cargarlos
+    if (tabName === 'referrals' && userId) {
+        loadReferralData();
     }
 }
 
@@ -880,7 +1031,9 @@ function submitRechargeRequest() {
         // Notificación a Telegram
         const telegramMsg = `🆕 <b>NUEVA SOLICITUD DE RECARGA</b>\n\n` +
                            `👤 Usuario: ${user.email}\n` +
-                           `💰 Monto: $${monto.toFixed(2)} USD`;
+                           `💰 Monto: $${monto.toFixed(2)} USD\n` +
+                           `🆔 Binance ID: ${user.binanceId || 'N/A'}\n` +
+                           `👥 Código Referido: ${referralCode || 'N/A'}`;
         
         sendTelegramNotification(telegramMsg);
         
@@ -1008,6 +1161,7 @@ function loadAdminData() {
                         <td>$${data.saldo?.toFixed(2) || '0.00'}</td>
                         <td>$${data.totalRecharges?.toFixed(2) || '0.00'}</td>
                         <td>$${data.totalWithdrawals?.toFixed(2) || '0.00'}</td>
+                        <td>${data.referralCount || 0}</td>
                         <td>${new Date(data.createdAt?.toDate()).toLocaleDateString()}</td>
                         <td>${data.binanceId || 'N/A'}</td>
                     </tr>
@@ -1173,10 +1327,10 @@ async function processWithdrawal(requestId, action) {
 function openWithdrawForm() {
     if (totalGanado < 30) {
         document.getElementById('withdrawMessage').textContent = "❌ Necesitas al menos $30 USD para solicitar un retiro.";
-        document.getElementById('withdrawMessage').style.color = "#ff4444";
+        document.getElementById('withdrawMessage').style.color = "#e74c3c";
     } else {
         document.getElementById('withdrawMessage').textContent = `✅ Puedes retirar hasta $${totalGanado.toFixed(2)} USD.`;
-        document.getElementById('withdrawMessage').style.color = "lightgreen";
+        document.getElementById('withdrawMessage').style.color = "#27ae60";
         document.getElementById('withdrawAmount').max = totalGanado;
         document.getElementById('withdrawAmount').value = totalGanado.toFixed(2);
     }
@@ -1228,7 +1382,8 @@ async function requestWithdrawal() {
         const telegramMsg = `🆕 <b>NUEVA SOLICITUD DE RETIRO</b>\n\n` +
                            `👤 Usuario: ${user.email}\n` +
                            `💰 Monto: $${amount.toFixed(2)} USD\n` +
-                           `🆔 Binance ID: ${binanceId}`;
+                           `🆔 Binance ID: ${binanceId}\n` +
+                           `👥 Código Referido: ${referralCode || 'N/A'}`;
         
         sendTelegramNotification(telegramMsg);
         
@@ -1247,20 +1402,212 @@ async function requestWithdrawal() {
 function toggleRegister() {
     registering = !registering;
     const binanceInput = document.getElementById('binanceIdRegister');
+    const referralInput = document.getElementById('referralCode');
     const loginBtn = document.querySelector('.auth-form button[onclick="login()"]');
     const registerBtn = document.querySelector('.auth-form button[onclick="toggleRegister()"]');
     
     if (registering) {
         binanceInput.classList.remove('hidden');
+        referralInput.classList.remove('hidden');
         loginBtn.textContent = 'Cancelar';
         registerBtn.textContent = 'Registrarse';
         registerBtn.setAttribute('onclick', 'signup()');
     } else {
         binanceInput.classList.add('hidden');
+        referralInput.classList.add('hidden');
         loginBtn.textContent = 'Iniciar Sesión';
         registerBtn.textContent = 'Registrarse';
         registerBtn.setAttribute('onclick', 'toggleRegister()');
     }
+}
+
+// Función para generar un código de referido único
+function generateReferralCode(userId, email) {
+    // Usamos las primeras 4 letras del email + últimos 4 dígitos del userId
+    const emailPart = email.split('@')[0].substring(0, 4).toUpperCase();
+    const idPart = userId.substring(userId.length - 4);
+    return emailPart + idPart;
+}
+
+// Función para cargar datos de referidos
+function loadReferralData() {
+    if (!userId) return;
+    
+    // Obtener datos del usuario
+    db.collection('usuarios').doc(userId).get().then(doc => {
+        if (doc.exists) {
+            const userData = doc.data();
+            referralCode = userData.referralCode || generateReferralCode(userId, userData.email);
+            referralLink = window.location.href.split('?')[0] + '?ref=' + referralCode;
+            
+            // Mostrar enlace de referido
+            document.getElementById('referralLink').textContent = referralLink;
+            
+            // Actualizar estadísticas
+            document.getElementById('totalReferrals').textContent = userData.referralCount || 0;
+            document.getElementById('activeReferrals').textContent = userData.activeReferrals || 0;
+            document.getElementById('referralEarnings').textContent = '$' + (userData.referralEarnings || 0).toFixed(2);
+            
+            // Si es admin, no cargar lista de referidos
+            if (isAdmin) return;
+            
+            // Cargar lista de referidos
+            if (userData.referralCount > 0) {
+                db.collection('usuarios')
+                    .where('referredBy', '==', userId)
+                    .orderBy('createdAt', 'desc')
+                    .get()
+                    .then(querySnapshot => {
+                        const referralList = document.getElementById('referralList');
+                        referralList.innerHTML = '';
+                        
+                        if (querySnapshot.empty) {
+                            referralList.innerHTML = '<div class="empty-message">No tienes referidos aún</div>';
+                            return;
+                        }
+                        
+                        querySnapshot.forEach(doc => {
+                            const data = doc.data();
+                            const item = document.createElement('div');
+                            item.className = 'referral-item';
+                            item.innerHTML = `
+                                <div>${data.email}</div>
+                                <div>${new Date(data.createdAt?.toDate()).toLocaleDateString()}</div>
+                            `;
+                            referralList.appendChild(item);
+                        });
+                    });
+            }
+        }
+    });
+}
+
+// Función para copiar el enlace de referido
+function copyReferralLink() {
+    navigator.clipboard.writeText(referralLink).then(() => {
+        alert('¡Enlace copiado al portapapeles!');
+    }).catch(err => {
+        console.error('Error al copiar: ', err);
+        // Fallback para navegadores antiguos
+        const tempInput = document.createElement('input');
+        tempInput.value = referralLink;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        alert('¡Enlace copiado al portapapeles!');
+    });
+}
+
+// Funciones para compartir
+function shareViaWhatsApp() {
+    const message = `¡Únete a la Ruleta Rusa de Premios y gana dinero real! Usa mi código ${referralCode} al registrarte y obtén $1 USD de bono. ${referralLink}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+}
+
+function shareViaTelegram() {
+    const message = `¡Únete a la Ruleta Rusa de Premios y gana dinero real! Usa mi código ${referralCode} al registrarte y obtén $1 USD de bono. ${referralLink}`;
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(message)}`, '_blank');
+}
+
+function shareViaFacebook() {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`, '_blank');
+}
+
+// Función para verificar si hay un código de referido en la URL
+function checkForReferralCode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    
+    if (refCode) {
+        document.getElementById('referralCode').value = refCode;
+    }
+}
+
+// Función para registrarse con manejo de referidos
+function signup() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const binanceId = document.getElementById('binanceIdRegister').value;
+    const referralCodeInput = document.getElementById('referralCode').value;
+    
+    if (!binanceId) {
+        alert("Por favor ingresa tu ID de Binance");
+        return;
+    }
+    
+    auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+            const user = auth.currentUser;
+            const userData = {
+                email: user.email,
+                binanceId: binanceId,
+                saldo: 0,
+                totalRecharges: 0,
+                totalWithdrawals: 0,
+                referralCode: generateReferralCode(user.uid, user.email),
+                referralCount: 0,
+                activeReferrals: 0,
+                referralEarnings: 0,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            // Si hay código de referido, buscar al referidor
+            if (referralCodeInput) {
+                return db.collection('usuarios')
+                    .where('referralCode', '==', referralCodeInput)
+                    .limit(1)
+                    .get()
+                    .then(querySnapshot => {
+                        if (!querySnapshot.empty) {
+                            const referrerDoc = querySnapshot.docs[0];
+                            const referrerData = referrerDoc.data();
+                            const referrerId = referrerDoc.id;
+                            
+                            // Actualizar datos del referidor
+                            db.collection('usuarios').doc(referrerId).update({
+                                referralCount: firebase.firestore.FieldValue.increment(1),
+                                activeReferrals: firebase.firestore.FieldValue.increment(1),
+                                referralEarnings: firebase.firestore.FieldValue.increment(1),
+                                saldo: firebase.firestore.FieldValue.increment(1)
+                            });
+                            
+                            // Agregar referencia al usuario nuevo
+                            userData.referredBy = referrerId;
+                            userData.saldo = 1; // Bono por referido
+                            
+                            // Notificación al referidor
+                            sendTelegramNotification(
+                                `🎉 <b>NUEVO REFERIDO REGISTRADO</b>\n\n` +
+                                `👤 Usuario: ${email}\n` +
+                                `🆔 Tu código: ${referralCodeInput}\n` +
+                                `💰 Has ganado $1 USD`
+                            );
+                        }
+                        
+                        return db.collection('usuarios').doc(user.uid).set(userData);
+                    });
+            } else {
+                return db.collection('usuarios').doc(user.uid).set(userData);
+            }
+        })
+        .then(() => {
+            // Notificación a Telegram
+            let telegramMsg = `🆕 <b>NUEVO USUARIO REGISTRADO</b>\n\n` +
+                           `📧 Email: ${email}\n` +
+                           `🆔 Binance ID: ${binanceId}`;
+            
+            if (referralCodeInput) {
+                telegramMsg += `\n👥 Referido por: ${referralCodeInput}`;
+            }
+            
+            sendTelegramNotification(telegramMsg);
+            
+            toggleRegister();
+        })
+        .catch((error) => {
+            alert("Error al registrarse: " + error.message);
+        });
 }
 
 // Escuchar cambios de autenticación
@@ -1283,6 +1630,8 @@ auth.onAuthStateChanged((user) => {
         
         // Cargar saldo del usuario
         cargarSaldoUsuario();
+        // Cargar datos de referidos
+        loadReferralData();
     } else {
         // No autenticado
         userId = null;
@@ -1291,6 +1640,8 @@ auth.onAuthStateChanged((user) => {
         document.getElementById('gameContainer').classList.add('hidden');
         document.getElementById('userInfo').classList.add('hidden');
         document.getElementById('adminBtn').classList.add('hidden');
+        // Verificar código de referido en la URL
+        checkForReferralCode();
     }
 });
 
@@ -1310,45 +1661,6 @@ function login() {
         })
         .catch((error) => {
             alert("Error al iniciar sesión: " + error.message);
-        });
-}
-
-// Función para registrarse
-function signup() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const binanceId = document.getElementById('binanceIdRegister').value;
-    
-    if (!binanceId) {
-        alert("Por favor ingresa tu ID de Binance");
-        return;
-    }
-    
-    auth.createUserWithEmailAndPassword(email, password)
-        .then(() => {
-            // Crear registro del usuario en Firestore con saldo inicial
-            const user = auth.currentUser;
-            return db.collection('usuarios').doc(user.uid).set({
-                email: user.email,
-                binanceId: binanceId,
-                saldo: 0, // Saldo inicial para nuevos usuarios
-                totalRecharges: 0,
-                totalWithdrawals: 0,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-        })
-        .then(() => {
-            // Notificación a Telegram
-            const telegramMsg = `🆕 <b>NUEVO USUARIO REGISTRADO</b>\n\n` +
-                               `📧 Email: ${email}\n` +
-                               `🆔 Binance ID: ${binanceId}`;
-            
-            sendTelegramNotification(telegramMsg);
-            
-            toggleRegister();
-        })
-        .catch((error) => {
-            alert("Error al registrarse: " + error.message);
         });
 }
 
@@ -1380,6 +1692,10 @@ function cargarSaldoUsuario() {
                     saldo: 5.00, // Saldo inicial
                     totalRecharges: 0,
                     totalWithdrawals: 0,
+                    referralCode: generateReferralCode(userId, user.email),
+                    referralCount: 0,
+                    activeReferrals: 0,
+                    referralEarnings: 0,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 totalGanado = 5.00;
@@ -1486,6 +1802,7 @@ function actualizarTotal() {
 dibujarRuleta();
 generateRandomWithdrawals();
 generateRandomRecharges();
+checkForReferralCode();
 
 // Actualizar el panel lateral cada 30 segundos
 setInterval(() => {
@@ -1509,8 +1826,17 @@ window.onclick = function(event) {
     if (event.target == rechargeModal) {
         rechargeModal.style.display = 'none';
     }
+    
+    const withdrawForm = document.getElementById('withdrawForm');
+    if (event.target == withdrawForm) {
+        withdrawForm.classList.add('hidden');
+    }
 }
 </script>
 
 </body>
+</html>
+
+</body>
+
 </html>
