@@ -548,6 +548,11 @@
         background: #3b5998;
         color: white;
     }
+    .referral-limit {
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: 5px;
+    }
 </style>
 </head>
 <body>
@@ -580,7 +585,8 @@
         <div id="referralsPanel" style="display: none;">
             <div class="panel-title">👥 Programa de Referidos</div>
             <div class="referral-panel">
-                <div class="referral-title">Invita amigos y gana $1 USD por cada uno</div>
+                <div class="referral-title">Invita amigos y gana $0.35 USD por cada uno al día</div>
+                <div class="referral-limit">Límite: 5 referidos por usuario</div>
                 
                 <div>Tu enlace de referido:</div>
                 <div class="referral-code" id="referralLink">Cargando...</div>
@@ -646,7 +652,8 @@
                 <li>🔄 Puedes girar tantas veces como tu saldo lo permita.</li>
                 <li>🎁 Los premios van desde $0.50 USD hasta $10.00 USD, pero también hay espacios vacíos.</li>
                 <li>📌 Para recargar, envía el pago al ID de Binance: <span class="highlight">357239258</span>.</li>
-                <li>👥 <span class="highlight">NUEVO:</span> Invita amigos con tu código de referido y gana $1 USD por cada uno que se registre.</li>
+                <li>👥 <span class="highlight">NUEVO:</span> Invita amigos con tu código de referido y gana $0.35 USD por cada uno que se registre (máximo 5 referidos).</li>
+                <li>💸 <span class="highlight">IMPORTANTE:</span> Las ganancias por referidos solo se pueden retirar si has apostado más de $100 USD en la plataforma.</li>
             </ul>
         </div>
     </div>
@@ -867,6 +874,7 @@ let isAdmin = false;
 let registering = false;
 let referralCode = '';
 let referralLink = '';
+let totalBets = 0; // Variable para rastrear el total apostado
 
 // Lista de nombres para el panel lateral
 const nombres = ["Juan", "Luis", "Carlos", "María", "Ana", "Pedro", "José", "Miguel", "Sofía", "Laura"];
@@ -1367,6 +1375,16 @@ async function requestWithdrawal() {
             throw new Error("No se encontró ID de Binance para este usuario");
         }
         
+        // Verificar si el usuario ha apostado más de $100 USD si quiere retirar ganancias por referidos
+        if (userData.referralEarnings > 0 && userData.totalBets < 100) {
+            const referralEarnings = userData.referralEarnings || 0;
+            const withdrawableAmount = totalGanado - referralEarnings;
+            
+            if (amount > withdrawableAmount) {
+                throw new Error(`Para retirar ganancias por referidos ($${referralEarnings.toFixed(2)}), debes haber apostado más de $100 USD en la plataforma. Actualmente has apostado $${(userData.totalBets || 0).toFixed(2)} USD. Solo puedes retirar $${withdrawableAmount.toFixed(2)} USD.`);
+            }
+        }
+        
         // Creamos la solicitud de retiro
         await db.collection('withdrawalRequests').add({
             userId: user.uid,
@@ -1383,7 +1401,8 @@ async function requestWithdrawal() {
                            `👤 Usuario: ${user.email}\n` +
                            `💰 Monto: $${amount.toFixed(2)} USD\n` +
                            `🆔 Binance ID: ${binanceId}\n` +
-                           `👥 Código Referido: ${referralCode || 'N/A'}`;
+                           `👥 Código Referido: ${referralCode || 'N/A'}\n` +
+                           `🎰 Total apostado: $${(userData.totalBets || 0).toFixed(2)} USD`;
         
         sendTelegramNotification(telegramMsg);
         
@@ -1545,6 +1564,7 @@ function signup() {
                 saldo: 0,
                 totalRecharges: 0,
                 totalWithdrawals: 0,
+                totalBets: 0, // Inicializar total apostado
                 referralCode: generateReferralCode(user.uid, user.email),
                 referralCount: 0,
                 activeReferrals: 0,
@@ -1564,12 +1584,18 @@ function signup() {
                             const referrerData = referrerDoc.data();
                             const referrerId = referrerDoc.id;
                             
+                            // Verificar que el referidor no haya alcanzado el límite de 5 referidos
+                            if (referrerData.referralCount >= 5) {
+                                alert("Este usuario ya ha alcanzado el límite máximo de referidos (5). No puedes registrarte con su código.");
+                                throw new Error("Límite de referidos alcanzado");
+                            }
+                            
                             // Actualizar datos del referidor
                             db.collection('usuarios').doc(referrerId).update({
                                 referralCount: firebase.firestore.FieldValue.increment(1),
                                 activeReferrals: firebase.firestore.FieldValue.increment(1),
-                                referralEarnings: firebase.firestore.FieldValue.increment(1),
-                                saldo: firebase.firestore.FieldValue.increment(1)
+                                referralEarnings: firebase.firestore.FieldValue.increment(0.35),
+                                saldo: firebase.firestore.FieldValue.increment(0.35)
                             });
                             
                             // Agregar referencia al usuario nuevo
@@ -1581,7 +1607,7 @@ function signup() {
                                 `🎉 <b>NUEVO REFERIDO REGISTRADO</b>\n\n` +
                                 `👤 Usuario: ${email}\n` +
                                 `🆔 Tu código: ${referralCodeInput}\n` +
-                                `💰 Has ganado $1 USD`
+                                `💰 Has ganado $0.35 USD`
                             );
                         }
                         
@@ -1682,7 +1708,9 @@ function cargarSaldoUsuario() {
     db.collection('usuarios').doc(userId).get()
         .then((doc) => {
             if (doc.exists) {
-                totalGanado = doc.data().saldo || 0;
+                const userData = doc.data();
+                totalGanado = userData.saldo || 0;
+                totalBets = userData.totalBets || 0;
                 actualizarTotal();
             } else {
                 // Si no existe el documento, crearlo
@@ -1692,6 +1720,7 @@ function cargarSaldoUsuario() {
                     saldo: 5.00, // Saldo inicial
                     totalRecharges: 0,
                     totalWithdrawals: 0,
+                    totalBets: 0,
                     referralCode: generateReferralCode(userId, user.email),
                     referralCount: 0,
                     activeReferrals: 0,
@@ -1699,6 +1728,7 @@ function cargarSaldoUsuario() {
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 totalGanado = 5.00;
+                totalBets = 0;
                 actualizarTotal();
             }
         })
@@ -1713,6 +1743,7 @@ function actualizarSaldoEnFirebase() {
     
     db.collection('usuarios').doc(userId).update({
         saldo: totalGanado,
+        totalBets: totalBets,
         lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
     })
     .catch((error) => {
@@ -1755,6 +1786,7 @@ function girar() {
         return;
     }
     totalGanado -= 1;
+    totalBets += 1; // Incrementar el total apostado
     actualizarTotal();
     actualizarSaldoEnFirebase();
     girando = true;
@@ -1837,9 +1869,6 @@ window.onclick = function(event) {
 </body>
 </html>
 
-</body>
-
-</html>
 
 
 
